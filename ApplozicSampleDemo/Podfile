@@ -1,0 +1,15 @@
+install! 'cocoapods', :integrate_targets => false
+
+platform :ios, '8.0'
+
+target 'ApplozicSampleDemo' do
+
+  # use_frameworks!
+  pod 'Applozic'
+  	#pod 'JBChartView'
+  
+  # Pods for ApplozicCocoaPodDemo
+  #pod 'Applozic', :path => "/Users/Adarsh/Documents/Git/Applozic-Chat-iOS-Framework/"
+
+ 
+end
