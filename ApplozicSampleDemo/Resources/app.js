@@ -45,7 +45,7 @@ function createTab(title, message, icon) {
 
 	loginBtn.addEventListener('click', function() {
 		console.log('Click event fired ');
-		applozicUserLoginAnLaunchChat('tiTest', '123', 'adarsh@applozic.com');
+		applozicUserLoginAnLaunchChat('tiTest', '123', 'adarsh@applozic.com','Titenium Test');
 	});
 
 	win.add(label);
@@ -99,7 +99,7 @@ function createTab(title, message, icon) {
 /*
  * Applozic functions to login and launching chat...
  */
-function applozicUserLoginAnLaunchChat(userId, password, emaiId) {
+function applozicUserLoginAnLaunchChat(userId, password, emaiId,displayname) {
 
 	ApplozicSettings();
 	var ALUserDefaultsHandler = require('Applozic/ALUserDefaultsHandler');
@@ -126,6 +126,7 @@ function applozicUserLoginAnLaunchChat(userId, password, emaiId) {
 		alUser.userId = userId;
 		alUser.applicationId = applozicApplicationKey;
 		alUser.password = password;
+		alUser.displayName= displayname;
 
 		applozicClient.initWithCompletionWithCompletion(alUser, function(response, abc) {
 			console.log("response::" + response.isRegisteredSuccessfully());
