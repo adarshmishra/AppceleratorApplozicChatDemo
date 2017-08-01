@@ -2,6 +2,7 @@
  * Create a new `Ti.UI.TabGroup`.
  */
 var tabGroup = Ti.UI.createTabGroup();
+var applozicApplicationKey='applozic-sample-app';
 
 /**
  * Add the two created tabs to the tabGroup object.
@@ -105,7 +106,7 @@ function applozicUserLoginAnLaunchChat(userId, password, emaiId) {
 	var ALPushAssist = require('Applozic/ALPushAssist');
 	var pushAssist = new ALPushAssist();
 	var ALChatLauncher = require('Applozic/ALChatLauncher');
-	var chatLauncher = new ALChatLauncher().initWithApplicationId("applozic-sample-app");
+	var chatLauncher = new ALChatLauncher().initWithApplicationId(applozicApplicationKey);
 
 	if (ALUserDefaultsHandler.isLoggedIn()) {
 
@@ -123,7 +124,7 @@ function applozicUserLoginAnLaunchChat(userId, password, emaiId) {
 		var response = new ALRegistrationResponse();
 		// //
 		alUser.userId = userId;
-		alUser.applicationId = "applozic-sample-app";
+		alUser.applicationId = applozicApplicationKey;
 		alUser.password = password;
 
 		applozicClient.initWithCompletionWithCompletion(alUser, function(response, abc) {
