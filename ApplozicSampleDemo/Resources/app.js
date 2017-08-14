@@ -2,7 +2,8 @@
  * Create a new `Ti.UI.TabGroup`.
  */
 var tabGroup = Ti.UI.createTabGroup();
-var applozicApplicationKey='applozic-sample-app';
+var applozicApplicationKey = 'applozic-sample-app';
+var osname = Ti.Platform.osname;
 
 /**
  * Add the two created tabs to the tabGroup object.
@@ -45,7 +46,12 @@ function createTab(title, message, icon) {
 
 	loginBtn.addEventListener('click', function() {
 		console.log('Click event fired ');
-		applozicUserLoginAnLaunchChat('tiTest', '123', 'adarsh@applozic.com','Titenium Test');
+		if (osname == 'android') {
+			console.log('Android called');
+			applozicUserLoginAnLaunchChatForAndroid('tiTest', '123', 'adarsh@applozic.com', 'Titenium Test');
+		} else {
+			applozicUserLoginAnLaunchChat('tiTest', '123', 'adarsh@applozic.com', 'Titenium Test');
+		}
 	});
 
 	win.add(label);
@@ -96,10 +102,75 @@ function createTab(title, message, icon) {
 	});
 
 })();
+
+function applozicUserLoginAnLaunchChatForAndroid(userId, password, emaiId, displayname) {
+
+	var user = require('com.applozic.mobicomkit.api.account.user.User');
+	//var user = require('android.view.View');
+
+	var applozicUser = new user();
+
+	applozicUser.setUserId(userId);
+	applozicUser.setEmail(emaiId);
+	applozicUser.setPassword(password);
+	applozicUser.setDisplayName(displayname);
+   // ======================================== Test ===============================//
+   
+            var Activity = require('android.app.Activity');
+			var Intent = require('android.content.Intent');
+			var currentActivity =new Activity(Ti.Android.currentActivity);
+			var ConversationActivity = require('com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity');
+			var Intent = require('android.content.Intent');
+			var intent = new Intent(currentActivity, ConversationActivity.class);
+			
+			var scanIntent = Titanium.Android.createIntent({
+				className: 'com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity'
+			});
+			Ti.Android.currentActivity.startActivity(scanIntent);
+			
+			
+	// ==============================================================================//
+
+	
+	var LoginTaskCallback = require('com.applozic.mobicomkit.api.account.user.UserLoginTask.TaskListener'),
+
+	    listener = new LoginTaskCallback({
+		onSuccess : function(registrationResponse, context) {
+			console.log("Launch Chat::" + registrationResponse);
+		    // var ApplozicBridgeForTi = require('com.applozic.mobicomkit.uiwidgets.async.ApplozicBridgeForTi');
+		    // var bridgeForTi = new ApplozicBridgeForTi();
+// 		    
+		    // var Activity = require('android.app.Activity');
+			// var activity = new Activity(Titanium.App.Android.getTopActivity());
+			// var appContext = activity.getApplicationContext();
+		    // ApplozicBridgeForTi.launchChat(appContext);
+			return true;
+		},
+
+		onFailure : function(registrationResponse, context) {
+			// Do some work here
+			console.log("Launch Chat::" + registrationResponse);
+			return true;
+		}
+	});
+
+	var LoginUserTask = require('com.applozic.mobicomkit.api.account.user.UserLoginTask');
+	var Activity = require('android.app.Activity');
+	var activity = new Activity(Titanium.App.Android.getTopActivity());
+	var appContext = activity.getApplicationContext();
+    //var AsyncUtil = require('com.applozic.mobicomkit.uiwidgets.async.AsyncUtil');
+    //var utils = new AsyncUtil();
+    
+	var loginTask = new LoginUserTask(applozicUser, listener, appContext);
+	
+	//AsyncUtil.executeTask(loginTask);
+	loginTask.execute();
+}
+
 /*
  * Applozic functions to login and launching chat...
  */
-function applozicUserLoginAnLaunchChat(userId, password, emaiId,displayname) {
+function applozicUserLoginAnLaunchChat(userId, password, emaiId, displayname) {
 
 	ApplozicSettings();
 	var ALUserDefaultsHandler = require('Applozic/ALUserDefaultsHandler');
@@ -126,7 +197,7 @@ function applozicUserLoginAnLaunchChat(userId, password, emaiId,displayname) {
 		alUser.userId = userId;
 		alUser.applicationId = applozicApplicationKey;
 		alUser.password = password;
-		alUser.displayName= displayname;
+		alUser.displayName = displayname;
 
 		applozicClient.initWithCompletionWithCompletion(alUser, function(response, abc) {
 			console.log("response::" + response.isRegisteredSuccessfully());
@@ -155,7 +226,7 @@ function ApplozicSettings() {
 	/*********************************************  NAVIGATION SETTINGS  ********************************************/
 
 	ALApplozicSettings.setStatusBarBGColor(UIColor.colorWithRedGreenBlueAlpha(66.0 / 255, 173.0 / 255, 247.0 / 255, 1));
-	//ALApplozicSettings.setStatusBarStyle(UIStatusBarStyleLightContent);
+	ALApplozicSettings.setStatusBarStyle(require('UIKit').UIStatusBarStyleLightContent);
 	/* BY DEFAULT Black:UIStatusBarStyleDefault IF REQ. White: UIStatusBarStyleLightContent  */
 	/* ADD property in info.plist "View controller-based status bar appearance" type: BOOLEAN value: NO */
 
