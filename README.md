@@ -129,7 +129,7 @@ Within <application> tag add below activities and services:
                         <action android:name="android.intent.action.BOOT_COMPLETED"/>
                     </intent-filter>
                 </receiver>
-                <meta-data android:name="com.applozic.application.key" android:value="applozic-sample-app"/>
+                <meta-data android:name="com.applozic.application.key" android:value="<Your applozic application key>"/>
                 <!-- Applozic Application Key -->
                 <!-- Launcher white Icon -->
                 <meta-data android:name="main_folder_name" android:value="applozic"/>
