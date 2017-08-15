@@ -103,10 +103,16 @@ function createTab(title, message, icon) {
 
 })();
 
+/**
+ * Specific to Android platform methods.
+ */
 function applozicUserLoginAnLaunchChatForAndroid(userId, password, emaiId, displayname) {
 
 	var user = require('com.applozic.mobicomkit.api.account.user.User');
-	//var user = require('android.view.View');
+	var MobiComUserPreference = require('com.applozic.mobicomkit.api.account.user.MobiComUserPreference');
+	var Activity = require('android.app.Activity');
+	var activity = new Activity(Titanium.App.Android.getTopActivity());
+	var appContext = activity.getApplicationContext();
 
 	var applozicUser = new user();
 
@@ -114,36 +120,25 @@ function applozicUserLoginAnLaunchChatForAndroid(userId, password, emaiId, displ
 	applozicUser.setEmail(emaiId);
 	applozicUser.setPassword(password);
 	applozicUser.setDisplayName(displayname);
-   // ======================================== Test ===============================//
-   
-            var Activity = require('android.app.Activity');
-			var Intent = require('android.content.Intent');
-			var currentActivity =new Activity(Ti.Android.currentActivity);
-			var ConversationActivity = require('com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity');
-			var Intent = require('android.content.Intent');
-			var intent = new Intent(currentActivity, ConversationActivity.class);
-			
-			var scanIntent = Titanium.Android.createIntent({
-				className: 'com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity'
-			});
-			Ti.Android.currentActivity.startActivity(scanIntent);
-			
-			
-	// ==============================================================================//
 
-	
+	// ===============================Applozic Login===============================================//
+	if (MobiComUserPreference.getInstance(appContext).isLoggedIn()) {
+		var scanIntent = Titanium.Android.createIntent({
+			className : 'com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity'
+		});
+		Ti.Android.currentActivity.startActivity(scanIntent);
+		return;
+	}
 	var LoginTaskCallback = require('com.applozic.mobicomkit.api.account.user.UserLoginTask.TaskListener'),
 
 	    listener = new LoginTaskCallback({
 		onSuccess : function(registrationResponse, context) {
+
 			console.log("Launch Chat::" + registrationResponse);
-		    // var ApplozicBridgeForTi = require('com.applozic.mobicomkit.uiwidgets.async.ApplozicBridgeForTi');
-		    // var bridgeForTi = new ApplozicBridgeForTi();
-// 		    
-		    // var Activity = require('android.app.Activity');
-			// var activity = new Activity(Titanium.App.Android.getTopActivity());
-			// var appContext = activity.getApplicationContext();
-		    // ApplozicBridgeForTi.launchChat(appContext);
+			var scanIntent = Titanium.Android.createIntent({
+				className : 'com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity'
+			});
+			Ti.Android.currentActivity.startActivity(scanIntent);
 			return true;
 		},
 
@@ -155,14 +150,11 @@ function applozicUserLoginAnLaunchChatForAndroid(userId, password, emaiId, displ
 	});
 
 	var LoginUserTask = require('com.applozic.mobicomkit.api.account.user.UserLoginTask');
-	var Activity = require('android.app.Activity');
-	var activity = new Activity(Titanium.App.Android.getTopActivity());
-	var appContext = activity.getApplicationContext();
-    //var AsyncUtil = require('com.applozic.mobicomkit.uiwidgets.async.AsyncUtil');
-    //var utils = new AsyncUtil();
-    
+	//var AsyncUtil = require('com.applozic.mobicomkit.uiwidgets.async.AsyncUtil');
+	//var utils = new AsyncUtil();
+
 	var loginTask = new LoginUserTask(applozicUser, listener, appContext);
-	
+
 	//AsyncUtil.executeTask(loginTask);
 	loginTask.execute();
 }
